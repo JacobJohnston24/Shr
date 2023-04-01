@@ -5,6 +5,7 @@ type DatabaseConstraintError = {
 };
 
 type AuthRequest = {
+  username: string;
   email: string;
   password: string;
 };
@@ -13,7 +14,14 @@ type UserIdParam = {
   userId: string;
 };
 
-type NewEmailBody = {
-  userId: string;
-  newEmail: string;
+type LinkIdParam = {
+  linkId: string;
+};
+
+type Pro = {
+  isPro: boolean;
+};
+
+type Admin = {
+  isAdmin: boolean;
 };

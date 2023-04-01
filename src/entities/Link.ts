@@ -4,7 +4,7 @@ import { User } from './User';
 @Entity()
 export class Link {
   @PrimaryGeneratedColumn('uuid')
-  linkID: string;
+  linkId: string;
 
   @Column()
   originalURL: string;
@@ -21,7 +21,7 @@ export class Link {
   @Column({ default: 0 })
   numHits: number;
 
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.userId)
   @JoinColumn()
   user: Relation<User>;
 }

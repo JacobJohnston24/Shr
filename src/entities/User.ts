@@ -4,13 +4,16 @@ import { Link } from './Link';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  userId: string;
 
   @Column()
-  name: string;
+  username: string;
 
   @Column()
   password: string;
+
+  @Column()
+  passwordHash: string;
 
   @Column({ default: false })
   isPro: boolean;
@@ -18,7 +21,7 @@ export class User {
   @Column({ default: false })
   isAdmin: boolean;
 
-  @OneToMany(() => Link, (link) => link.linkID)
+  @OneToMany(() => Link, (link) => link.linkId)
   @JoinColumn()
   link: Relation<Link>;
 }
