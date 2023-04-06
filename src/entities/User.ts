@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, Relation, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Relation } from 'typeorm';
 import { Link } from './Link';
 
 @Entity()
@@ -6,13 +6,10 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   userId: string;
 
-  @Column()
+  @Column({ unique: true })
   username: string;
 
-  @Column()
-  password: string;
-
-  @Column()
+  @Column({ unique: true })
   passwordHash: string;
 
   @Column({ default: false })
@@ -21,7 +18,6 @@ export class User {
   @Column({ default: false })
   isAdmin: boolean;
 
-  @OneToMany(() => Link, (link) => link.linkId)
-  @JoinColumn()
-  link: Relation<Link>;
+  @OneToMany(() => Link, (link) => link.user, { cascade: ['insert', 'update'] })
+  links: Relation<Link>[];
 }

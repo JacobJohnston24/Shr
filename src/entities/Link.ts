@@ -1,27 +1,20 @@
-import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, Relation, ManyToOne } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, Relation } from 'typeorm';
 import { User } from './User';
 
 @Entity()
 export class Link {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn()
   linkId: string;
 
   @Column()
-  originalURL: string;
+  originalUrl: string;
 
   @Column()
-  lastAccessedOn: string;
-
-  @Column({ default: false })
-  isPro: boolean;
-
-  @Column({ default: false })
-  isAdmin: boolean;
+  lastAccessedOn: Date;
 
   @Column({ default: 0 })
   numHits: number;
 
-  @ManyToOne(() => User, (user) => user.userId)
-  @JoinColumn()
+  @ManyToOne(() => User, (user) => user.links)
   user: Relation<User>;
 }

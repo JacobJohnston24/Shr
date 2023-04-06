@@ -7,20 +7,17 @@ async function registerUser(req: Request, res: Response): Promise<void> {
   const { username, password } = req.body as AuthRequest;
 
   const user = await getUserByUsername(username);
-
-  if (!user) {
-    res.sendStatus(404);
+  if (user) {
+    res.sendStatus(409);
     return;
   }
 
-  // IMPORTANT: Hash the password
   const passwordHash = await argon2.hash(password);
 
   try {
-    // IMPORTANT: Store the `passwordHash` and NOT the plaintext password
     const newUser = await addNewUser(username, passwordHash);
-    console.log(newUser);
-    res.sendStatus(201);
+
+    res.status(201).json(newUser);
   } catch (err) {
     console.error(err);
     const databaseErrorMessage = parseDatabaseError(err);
@@ -32,24 +29,27 @@ async function logIn(req: Request, res: Response): Promise<void> {
   const { username, password } = req.body as AuthRequest;
 
   const user = await getUserByUsername(username);
-
   if (!user) {
-    res.sendStatus(404); // 404 Not Found (403 Forbidden would also make a lot of sense here)
+    res.sendStatus(404); // 404 Not Found - email doesn't exist
     return;
   }
 
-  // The account exists so now we can check their password
   const { passwordHash } = user;
-
-  // If the password does not match
   if (!(await argon2.verify(passwordHash, password))) {
-    res.sendStatus(404); // 404 Not Found (403 Forbidden would also make a lot of sense here)
+    res.sendStatus(404); // 404 Not Found - user with email/pass doesn't exist
     return;
   }
 
-  // The user has successfully logged in
-  // NOTES: We will update this once we implement session management
-  res.sendStatus(200); // 200 OK
+  await req.session.clearSession();
+  req.session.authenticatedUser = {
+    userId: user.userId,
+    username: user.username,
+    isPro: user.isPro,
+    isAdmin: user.isAdmin,
+  };
+  req.session.isLoggedIn = true;
+
+  res.sendStatus(200);
 }
 
 export { registerUser, logIn };

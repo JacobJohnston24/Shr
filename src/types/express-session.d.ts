@@ -1,27 +1,16 @@
-type DatabaseConstraintError = {
-  type: 'unique' | 'check' | 'not null' | 'foreign key' | 'unknown';
-  columnName?: string;
-  message?: string;
-};
+import 'express-session';
 
-type AuthRequest = {
-  username: string;
-  email: string;
-  password: string;
-};
+declare module 'express-session' {
+  export interface Session {
+    clearSession(): Promise<void>; // DO NOT MODIFY THIS!
 
-type UserIdParam = {
-  userId: string;
-};
-
-type LinkIdParam = {
-  linkId: string;
-};
-
-type Pro = {
-  isPro: boolean;
-};
-
-type Admin = {
-  isAdmin: boolean;
-};
+    // NOTES: Our example app's custom session properties:
+    authenticatedUser: {
+      userId: string;
+      username: string;
+      isPro: boolean;
+      isAdmin: boolean;
+    };
+    isLoggedIn: boolean;
+  }
+}
